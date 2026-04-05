@@ -1,9 +1,15 @@
 let tablaActual = 2;
-let respuestaCorrecta = 0;
 let puntosActuales = 0;
 const puntosParaGanar = 10;
-let bolsaNumeros = [];
+let bolsaPreguntas = []; // Ahora guarda objetos {tabla, multiplicador}
 let nombreJugador = ""; 
+
+// Variables para Evaluación
+let esModoEvaluacion = false;
+let puntajeEvaluacion = 0;
+let tiempoRestante = 20;
+let temporizador;
+let preguntaEnPantalla = null; // Guarda la cuenta actual
 
 const sonidos = {
     acierto: new Audio('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3'),
@@ -15,68 +21,123 @@ const iconos = { 2: "🚲", 3: "🍀", 4: "🐕" };
 
 function guardarNombre() {
     const input = document.getElementById('input-nombre').value.trim();
-    
     if (input === "") {
         alert("¡Por favor, dime tu nombre para empezar la misión!");
         return;
     }
-
     nombreJugador = input;
     
-    document.getElementById('nombre-jugador-menu').innerText = nombreJugador;
-    document.getElementById('nombre-jugador-victoria').innerText = nombreJugador;
-    document.getElementById('nombre-jugador-salida').innerText = nombreJugador;
+    // Inyectar nombre en todos los spans correspondientes
+    document.querySelectorAll('.nombre-jugador').forEach(el => el.innerText = nombreJugador);
 
     document.getElementById('welcome-screen').classList.add('hidden');
     document.getElementById('menu-screen').classList.remove('hidden');
 }
 
+// Inicia una misión normal de una sola tabla
 function iniciarMision(tabla) {
+    esModoEvaluacion = false;
     tablaActual = tabla;
     puntosActuales = 0;
     
-    // ¡Línea corregida!
-    bolsaNumeros = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]; 
+    // Llenar la bolsa solo con la tabla elegida
+    bolsaPreguntas = [];
+    for(let i = 1; i <= 10; i++) {
+        bolsaPreguntas.push({ t: tabla, n: i });
+    }
     
+    document.getElementById('panel-evaluacion').classList.add('hidden');
+    document.getElementById('titulo-mision').innerText = "Misión de la Tabla del " + tabla;
+    prepararPantallaJuego();
+}
+
+// Inicia el modo evaluación mezclado
+function iniciarEvaluacion() {
+    esModoEvaluacion = true;
+    puntosActuales = 0;
+    puntajeEvaluacion = 0;
+    
+    // Crear un pozo con todas las tablas (2, 3 y 4)
+    let pozoTotal = [];
+    for(let t of [2, 3, 4]) {
+        for(let i = 1; i <= 10; i++) pozoTotal.push({ t: t, n: i });
+    }
+    
+    // Mezclar y elegir 10 al azar
+    pozoTotal.sort(() => Math.random() - 0.5);
+    bolsaPreguntas = pozoTotal.slice(0, 10);
+    
+    document.getElementById('panel-evaluacion').classList.remove('hidden');
+    actualizarMarcadorEval();
+    document.getElementById('titulo-mision').innerText = "Modo Evaluación ⏱️";
+    prepararPantallaJuego();
+}
+
+function prepararPantallaJuego() {
     actualizarBarra();
-    
-    document.getElementById('titulo-mision').innerText = "Misión de la Tabla del " + tablaActual;
     document.querySelectorAll('.screen').forEach(s => s.classList.add('hidden'));
     document.getElementById('game-screen').classList.remove('hidden');
-    
     generarPregunta();
 }
 
 function generarPregunta() {
-    let indice = Math.floor(Math.random() * bolsaNumeros.length);
-    let n = bolsaNumeros.splice(indice, 1)[0]; 
-    
-    respuestaCorrecta = tablaActual * n;
-    
-    let fraseExtra = "";
-    if (tablaActual === 2) fraseExtra = "el doble de " + n;
-    else if (tablaActual === 3) fraseExtra = "el triple de " + n;
-    else if (tablaActual === 4) fraseExtra = "el doble del doble de " + n;
-
-    document.getElementById('pregunta').innerHTML = `
-        ${tablaActual} x ${n} = <br>
-        <small>${tablaActual} veces ${n}</small>
-        <small>${fraseExtra}</small>
-    `;
-    
-    let emojisHtml = "";
-    for(let i = 0; i < n; i++) {
-        emojisHtml += `<div class="grupo-emoji">${iconos[tablaActual].repeat(tablaActual)}</div>`;
-    }
-    document.getElementById('visualizacion-emojis').innerHTML = emojisHtml;
+    clearInterval(temporizador); // Limpiar reloj anterior
+    habilitarBotones(true);
     document.getElementById('mensaje-feedback').innerText = "";
+
+    let indice = Math.floor(Math.random() * bolsaPreguntas.length);
+    preguntaEnPantalla = bolsaPreguntas.splice(indice, 1)[0]; 
+    
+    if (!esModoEvaluacion) {
+        // MODO NORMAL: Texto completo y dibujos
+        let fraseExtra = "";
+        if (preguntaEnPantalla.t === 2) fraseExtra = "el doble de " + preguntaEnPantalla.n;
+        else if (preguntaEnPantalla.t === 3) fraseExtra = "el triple de " + preguntaEnPantalla.n;
+        else if (preguntaEnPantalla.t === 4) fraseExtra = "el doble del doble de " + preguntaEnPantalla.n;
+
+        document.getElementById('pregunta').innerHTML = `
+            ${preguntaEnPantalla.t} x ${preguntaEnPantalla.n} = <br>
+            <small>${preguntaEnPantalla.t} veces ${preguntaEnPantalla.n}</small>
+            <small>${fraseExtra}</small>
+        `;
+        
+        let emojisHtml = "";
+        for(let i = 0; i < preguntaEnPantalla.n; i++) {
+            emojisHtml += `<div class="grupo-emoji">${iconos[preguntaEnPantalla.t].repeat(preguntaEnPantalla.t)}</div>`;
+        }
+        document.getElementById('visualizacion-emojis').innerHTML = emojisHtml;
+        document.getElementById('visualizacion-emojis').style.display = 'flex';
+        
+    } else {
+        // MODO EVALUACIÓN: Solo la cuenta, sin dibujos y con reloj
+        document.getElementById('pregunta').innerHTML = `${preguntaEnPantalla.t} x ${preguntaEnPantalla.n} =`;
+        document.getElementById('visualizacion-emojis').style.display = 'none';
+        
+        tiempoRestante = 20;
+        document.getElementById('tiempo-texto').innerText = tiempoRestante;
+        temporizador = setInterval(relojTick, 1000);
+    }
+    
     generarOpciones();
 }
 
+function relojTick() {
+    tiempoRestante--;
+    document.getElementById('tiempo-texto').innerText = tiempoRestante;
+    
+    if (tiempoRestante <= 0) {
+        clearInterval(temporizador);
+        procesarRespuesta(false, "¡Se acabó el tiempo! ⏰");
+    }
+}
+
 function generarOpciones() {
+    let respuestaCorrecta = preguntaEnPantalla.t * preguntaEnPantalla.n;
     let opciones = [respuestaCorrecta];
+    
     while (opciones.length < 4) {
-        let error = tablaActual * (Math.floor(Math.random() * 10) + 1);
+        // Generar distractores usando la misma tabla
+        let error = preguntaEnPantalla.t * (Math.floor(Math.random() * 10) + 1);
         if (!opciones.includes(error)) opciones.push(error);
     }
     opciones.sort(() => Math.random() - 0.5);
@@ -87,25 +148,45 @@ function generarOpciones() {
         let btn = document.createElement('button');
         btn.className = 'btn-opcion';
         btn.innerText = num;
-        btn.onclick = () => verificarRespuesta(num);
+        btn.onclick = () => {
+            let esCorrecta = (num === respuestaCorrecta);
+            procesarRespuesta(esCorrecta, esCorrecta ? "¡Excelente! 🎉" : "¡Incorrecto! ❌");
+        };
         contenedor.appendChild(btn);
     });
 }
 
-function verificarRespuesta(num) {
-    if (num === respuestaCorrecta) {
+function procesarRespuesta(esCorrecta, mensaje) {
+    clearInterval(temporizador);
+    habilitarBotones(false); // Evitar múltiples clics
+    
+    const feedback = document.getElementById('mensaje-feedback');
+    feedback.innerText = mensaje;
+    
+    if (esCorrecta) {
         sonidos.acierto.play();
-        puntosActuales++;
-        actualizarBarra();
-        if (puntosActuales >= puntosParaGanar) {
-            setTimeout(mostrarVictoria, 500);
-        } else {
-            setTimeout(generarPregunta, 1200);
-        }
+        feedback.style.color = "#4CAF50";
+        if (esModoEvaluacion) puntajeEvaluacion += 10;
     } else {
         sonidos.error.play();
-        document.getElementById('mensaje-feedback').innerText = "¡Cuenta los dibujos! 🧐";
-        document.getElementById('mensaje-feedback').style.color = "#FF6B6B";
+        feedback.style.color = "#FF6B6B";
+        // En evaluación resta puntos (mínimo 0)
+        if (esModoEvaluacion) {
+            puntajeEvaluacion -= 10;
+            if (puntajeEvaluacion < 0) puntajeEvaluacion = 0; 
+        }
+    }
+    
+    actualizarMarcadorEval();
+    
+    // Avanza en la barra sin importar si acertó o falló, porque es un examen
+    puntosActuales++; 
+    actualizarBarra();
+    
+    if (puntosActuales >= puntosParaGanar) {
+        setTimeout(mostrarVictoria, 1000);
+    } else {
+        setTimeout(generarPregunta, 1500);
     }
 }
 
@@ -113,19 +194,39 @@ function actualizarBarra() {
     document.getElementById('progress-bar').style.width = (puntosActuales / puntosParaGanar * 100) + "%";
 }
 
+function actualizarMarcadorEval() {
+    document.getElementById('puntaje-texto').innerText = puntajeEvaluacion;
+}
+
+function habilitarBotones(estado) {
+    document.querySelectorAll('.btn-opcion').forEach(btn => btn.disabled = !estado);
+}
+
 function mostrarVictoria() {
     sonidos.victoria.play();
     confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
+    
     document.getElementById('game-screen').classList.add('hidden');
     document.getElementById('victory-screen').classList.remove('hidden');
+    
+    if (esModoEvaluacion) {
+        document.getElementById('resultado-evaluacion').classList.remove('hidden');
+        document.getElementById('puntaje-final-texto').innerText = puntajeEvaluacion;
+        document.getElementById('mensaje-victoria-normal').classList.add('hidden');
+    } else {
+        document.getElementById('resultado-evaluacion').classList.add('hidden');
+        document.getElementById('mensaje-victoria-normal').classList.remove('hidden');
+    }
 }
 
 function volverAlMenu() {
+    clearInterval(temporizador);
     document.querySelectorAll('.screen').forEach(s => s.classList.add('hidden'));
     document.getElementById('menu-screen').classList.remove('hidden');
 }
 
 function salirDelJuego() {
+    clearInterval(temporizador);
     document.querySelectorAll('.screen').forEach(s => s.classList.add('hidden'));
     document.getElementById('exit-screen').classList.remove('hidden');
 }
