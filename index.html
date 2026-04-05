@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Misiones de Multiplicar</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+</head>
+<body>
+
+    <div class="app-container">
+        
+        <div id="welcome-screen" class="screen">
+            <h1>¡Misiones Secretas! 🚀</h1>
+            <p style="font-size: 20px; font-weight: bold; color: #333; margin-bottom: 10px;">¿Estás listo para jugar?</p>
+            <p style="margin-bottom: 20px;">Ingresa tus datos para comenzar la misión:</p>
+            
+            <input type="text" id="input-nombre" placeholder="¿Cuál es tu nombre?" class="input-text">
+            
+            <button class="btn-menu tabla3" onclick="guardarNombre()">¡Empezar Aventura!</button>
+        </div>
+
+        <div id="menu-screen" class="screen hidden">
+            <h1>¡Hola, <span id="nombre-jugador-menu"></span>! 👋</h1>
+            <p>Elegí tu aventura:</p>
+            <button class="btn-menu tabla2" onclick="iniciarMision(2)">Misión del 2 🚲</button>
+            <button class="btn-menu tabla3" onclick="iniciarMision(3)">Misión del 3 🍀</button>
+            <button class="btn-menu tabla4" onclick="iniciarMision(4)">Misión del 4 🐕</button>
+            <button class="btn-salir" onclick="salirDelJuego()">❌ Salir</button>
+        </div>
+
+        <div id="game-screen" class="screen hidden">
+            <div class="progress-container">
+                <div id="progress-bar"></div>
+            </div>
+            <h2 id="titulo-mision">Misión</h2>
+            
+            <div class="question-container">
+                <div id="pregunta" class="texto-multilinea"></div>
+                <div id="incognita">¿ ?</div>
+                <div id="visualizacion-emojis" class="emoji-area"></div>
+            </div>
+            
+            <div id="opciones-container" class="options-grid"></div>
+            <div id="mensaje-feedback" class="feedback"></div>
+            
+            <button class="btn-volver" onclick="volverAlMenu()">🏠 Abandonar Misión</button>
+        </div>
+
+        <div id="victory-screen" class="screen hidden">
+            <h1 style="font-size: 34px;">¡Misión Cumplida! 🏆</h1>
+            <p style="font-size: 22px; font-weight: bold; margin-bottom: 10px;">¡Excelente trabajo, <span id="nombre-jugador-victoria"></span>!</p>
+            <p style="color: #666; margin-bottom: 20px;">Completaste toda la tabla.</p>
+            <p style="color: #666; font-style: italic;">Gracias por participar,<br>Prof. Bejarano</p>
+            <button class="btn-menu tabla3" style="margin-top: 20px;" onclick="volverAlMenu()">🏠 Volver al Menú</button>
+        </div>
+
+        <div id="exit-screen" class="screen hidden">
+            <h1>¡Hasta la próxima, <span id="nombre-jugador-salida"></span>! 👋</h1>
+            <p>Espero que te hayas divertido aprendiendo.</p>
+            <button class="btn-volver" style="margin-top: 20px;" onclick="location.reload()">🔄 Reiniciar App</button>
+        </div>
+
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
