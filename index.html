@@ -11,29 +11,42 @@
 
     <div class="app-container">
         
+        <!-- PANTALLA DE BIENVENIDA -->
         <div id="welcome-screen" class="screen">
             <h1>¡Misiones Secretas! 🚀</h1>
             <p style="font-size: 20px; font-weight: bold; color: #333; margin-bottom: 10px;">¿Estás listo para jugar?</p>
-            <p style="margin-bottom: 20px;">Ingresa tus datos para comenzar la misión:</p>
+            <p style="margin-bottom: 20px;">Ingresá tus datos para comenzar la misión:</p>
             
             <input type="text" id="input-nombre" placeholder="¿Cuál es tu nombre?" class="input-text">
             
             <button class="btn-menu tabla3" onclick="guardarNombre()">¡Empezar Aventura!</button>
         </div>
 
+        <!-- PANTALLA DE MENÚ -->
         <div id="menu-screen" class="screen hidden">
-            <h1>¡Hola, <span id="nombre-jugador-menu"></span>! 👋</h1>
+            <h1>¡Hola, <span class="nombre-jugador"></span>! 👋</h1>
             <p>Elegí tu aventura:</p>
             <button class="btn-menu tabla2" onclick="iniciarMision(2)">Misión del 2 🚲</button>
             <button class="btn-menu tabla3" onclick="iniciarMision(3)">Misión del 3 🍀</button>
             <button class="btn-menu tabla4" onclick="iniciarMision(4)">Misión del 4 🐕</button>
+            <hr style="margin: 15px 0; border: 1px dashed #ccc;">
+            <button class="btn-menu modo-eval" onclick="iniciarEvaluacion()">Modo Evaluación ⏱️</button>
             <button class="btn-salir" onclick="salirDelJuego()">❌ Salir</button>
         </div>
 
+        <!-- PANTALLA DE JUEGO -->
         <div id="game-screen" class="screen hidden">
+            
+            <!-- Panel de Evaluación (Tiempo y Puntaje) -->
+            <div id="panel-evaluacion" class="hidden eval-hud">
+                <span class="reloj">⏱️ <span id="tiempo-texto">20</span>s</span>
+                <span class="puntos">⭐ <span id="puntaje-texto">0</span> pts</span>
+            </div>
+
             <div class="progress-container">
                 <div id="progress-bar"></div>
             </div>
+            
             <h2 id="titulo-mision">Misión</h2>
             
             <div class="question-container">
@@ -48,16 +61,25 @@
             <button class="btn-volver" onclick="volverAlMenu()">🏠 Abandonar Misión</button>
         </div>
 
+        <!-- PANTALLA DE VICTORIA -->
         <div id="victory-screen" class="screen hidden">
             <h1 style="font-size: 34px;">¡Misión Cumplida! 🏆</h1>
-            <p style="font-size: 22px; font-weight: bold; margin-bottom: 10px;">¡Excelente trabajo, <span id="nombre-jugador-victoria"></span>!</p>
-            <p style="color: #666; margin-bottom: 20px;">Completaste toda la tabla.</p>
+            <p style="font-size: 22px; font-weight: bold; margin-bottom: 10px;">¡Excelente trabajo, <span class="nombre-jugador"></span>!</p>
+            
+            <!-- Sección de puntaje (solo visible en evaluación) -->
+            <div id="resultado-evaluacion" class="hidden" style="margin: 15px 0; padding: 15px; background: #f0f8ff; border-radius: 10px; border: 2px solid #4ECDC4;">
+                <p style="font-size: 18px; margin-bottom: 5px;">Tu puntaje final es:</p>
+                <h2 style="font-size: 40px; color: #333;"><span id="puntaje-final-texto">0</span>/100</h2>
+            </div>
+            
+            <p id="mensaje-victoria-normal" style="color: #666; margin-bottom: 20px;">Completaste toda la tabla.</p>
             <p style="color: #666; font-style: italic;">Gracias por participar,<br>Prof. Bejarano</p>
             <button class="btn-menu tabla3" style="margin-top: 20px;" onclick="volverAlMenu()">🏠 Volver al Menú</button>
         </div>
 
+        <!-- PANTALLA DE SALIDA -->
         <div id="exit-screen" class="screen hidden">
-            <h1>¡Hasta la próxima, <span id="nombre-jugador-salida"></span>! 👋</h1>
+            <h1>¡Hasta la próxima, <span class="nombre-jugador"></span>! 👋</h1>
             <p>Espero que te hayas divertido aprendiendo.</p>
             <button class="btn-volver" style="margin-top: 20px;" onclick="location.reload()">🔄 Reiniciar App</button>
         </div>
