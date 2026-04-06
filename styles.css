@@ -6,19 +6,30 @@ body { background-color: #f0f8ff; display: flex; justify-content: center; align-
 .input-text { width: 100%; padding: 15px; font-size: 20px; border: 3px solid #ccc; border-radius: 12px; margin-bottom: 25px; text-align: center; color: #333; outline: none; }
 .input-text:focus { border-color: #4ECDC4; }
 
-.btn-menu, .btn-salir { display: block; width: 100%; padding: 18px; margin-bottom: 12px; font-size: 20px; font-weight: bold; color: white; border: none; border-radius: 12px; cursor: pointer; box-shadow: 0 4px 0 rgba(0,0,0,0.15); }
+.btn-menu, .btn-salir { display: block; width: 100%; padding: 16px; margin-bottom: 10px; font-size: 20px; font-weight: bold; color: white; border: none; border-radius: 12px; cursor: pointer; box-shadow: 0 4px 0 rgba(0,0,0,0.15); }
 .btn-menu:active, .btn-salir:active { transform: translateY(2px); box-shadow: none; }
 
+/* Colores de las Tablas */
 .tabla2 { background-color: #FF6B6B; }
 .tabla3 { background-color: #4ECDC4; }
 .tabla4 { background-color: #FFD166; color: #333; }
-.modo-eval { background-color: #9b59b6; } /* Violeta para el examen */
-.btn-salir { background-color: #95a5a6; font-size: 16px; margin-top: 20px; }
+.tabla5 { background-color: #3498db; }
+.tabla6 { background-color: #e67e22; }
+.tabla7 { background-color: #9b59b6; }
+.tabla8 { background-color: #34495e; }
+.tabla9 { background-color: #16a085; }
+.tabla10 { background-color: #c0392b; }
 
-/* Panel de HUD para evaluación */
+.modo-eval { background-color: #8e44ad; } 
+.btn-pro { background-color: #f1c40f; color: #333; }
+.btn-salir { background-color: #95a5a6; font-size: 16px; margin-top: 15px; }
+
+/* Grilla para las tablas PRO */
+.grid-pro { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.grid-pro .btn-menu { font-size: 16px; padding: 12px; margin-bottom: 0;}
+
 .eval-hud { display: flex; justify-content: space-between; font-weight: bold; font-size: 20px; margin-bottom: 15px; padding: 10px; background: #f9f9f9; border-radius: 10px; border: 2px solid #ddd; }
-.reloj { color: #e74c3c; }
-.puntos { color: #f39c12; }
+.reloj { color: #e74c3c; } .puntos { color: #f39c12; }
 
 .progress-container { width: 100%; background-color: #eee; border-radius: 10px; height: 12px; margin-bottom: 15px; }
 #progress-bar { width: 0%; height: 100%; background-color: #4CAF50; transition: width 0.4s; }
