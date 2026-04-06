@@ -1,6 +1,17 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
+    <!-- EMPIEZA GOOGLE ANALYTICS -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-XXXXXXXXXX');
+    </script>
+    <!-- TERMINA GOOGLE ANALYTICS -->
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Misiones de Multiplicar</title>
@@ -27,7 +38,6 @@
             <button class="btn-menu tabla3" onclick="iniciarMision(3)">Misión del 3 🍀</button>
             <button class="btn-menu tabla4" onclick="iniciarMision(4)">Misión del 4 🐕</button>
             
-            <!-- Contenedor PRO oculto inicialmente -->
             <div id="menu-tablas-pro" class="hidden" style="margin-top: 15px; border-top: 2px dashed #ccc; padding-top: 15px;">
                 <p style="color: #f39c12; font-weight: bold; margin-bottom: 10px;">🌟 Misiones PRO Desbloqueadas 🌟</p>
                 <div class="grid-pro">
@@ -71,7 +81,6 @@
                 <h2 style="font-size: 40px; color: #333;"><span id="puntaje-final-texto">0</span>/100</h2>
             </div>
             <p id="mensaje-victoria-normal" style="color: #666; margin-bottom: 20px;">Completaste toda la tabla.</p>
-            <p style="color: #666; font-style: italic;">Gracias por participar,<br>Prof. Bejarano</p>
             <button class="btn-menu tabla3" style="margin-top: 20px;" onclick="volverAlMenu()">🏠 Volver al Menú</button>
         </div>
 
