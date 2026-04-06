@@ -22,48 +22,60 @@ const iconos = {
     5: "🖐️", 6: "🎲", 7: "🌈", 8: "🕷️", 9: "🎈", 10: "🪙" 
 };
 
-// AL CARGAR LA APP: Verificamos si ya era PRO
 window.onload = function() {
-    if (localStorage.getItem('modoProBejarano') === 'activado') {
-        activarInterfazPro();
+    try {
+        if (localStorage.getItem('modoProBejarano') === 'activado') {
+            activarInterfazPro();
+        }
+    } catch (e) {
+        console.log("El celular no permite guardar memoria, pero la app sigue funcionando.");
     }
 };
 
 function guardarNombre() {
     const input = document.getElementById('input-nombre').value.trim();
-    if (input === "") { alert("¡Por favor, dime tu nombre!"); return; }
+    if (input === "") return;
     nombreJugador = input;
     document.querySelectorAll('.nombre-jugador').forEach(el => el.innerText = nombreJugador);
     document.getElementById('welcome-screen').classList.add('hidden');
     document.getElementById('menu-screen').classList.remove('hidden');
 }
 
-// === SISTEMA PRO CORREGIDO Y SIMPLIFICADO ===
-function pedirCodigoPro() {
-    let codigo = prompt("Ingresa el código secreto para desbloquear todas las misiones:");
-    if (!codigo) return;
+// === NUEVO SISTEMA PRO (Apto para APK) ===
+function mostrarAreaPro() {
+    document.getElementById('btn-activar-pro').classList.add('hidden');
+    document.getElementById('area-ingreso-pro').classList.remove('hidden');
+}
 
-    // Encriptación Base64 simple
+function verificarCodigoPro() {
+    let codigo = document.getElementById('input-codigo-pro').value;
     let hashGenerado = btoa(codigo.trim());
-    
-    // Esta es la huella exacta para: TablasPro2026
-    let hashCorrecto = "VGFibGFzUHJvMjAyNg==";
+    let hashCorrecto = "VGFibGFzUHJvMjAyNg=="; // Huella de TablasPro2026
 
     if (hashGenerado === hashCorrecto) {
-        localStorage.setItem('modoProBejarano', 'activado'); // Guardar en el celular
-        activarInterfazPro();
-        alert("¡Código aceptado! 🚀 Modo PRO activado permanentemente.");
+        document.getElementById('mensaje-error-pro').classList.add('hidden');
+        document.getElementById('mensaje-exito-pro').classList.remove('hidden');
+        
+        try { localStorage.setItem('modoProBejarano', 'activado'); } catch(e) {}
+        
+        // Esperamos 1.5 segundos para que el usuario lea el mensaje de éxito
+        setTimeout(() => {
+            document.getElementById('area-ingreso-pro').classList.add('hidden');
+            activarInterfazPro();
+        }, 1500);
     } else {
-        alert("Código incorrecto. Verifica mayúsculas y minúsculas.");
+        document.getElementById('mensaje-error-pro').classList.remove('hidden');
     }
 }
 
 function activarInterfazPro() {
     esProActivado = true;
     document.getElementById('btn-activar-pro').classList.add('hidden');
+    document.getElementById('area-ingreso-pro').classList.add('hidden');
     document.getElementById('menu-tablas-pro').classList.remove('hidden');
 }
 
+// === RESTO DEL JUEGO ===
 function iniciarMision(tabla) {
     esModoEvaluacion = false;
     tablaActual = tabla;
@@ -80,7 +92,6 @@ function iniciarEvaluacion() {
     puntosActuales = 0;
     puntajeEvaluacion = 0;
     
-    // ¡Línea corregida!
     let tablasAUsar = esProActivado ? [2, 3, 4, 5, 6, 7, 8, 9, 10] : [2, 3, 4];
     
     let pozoTotal = [];
@@ -107,8 +118,6 @@ function generarPregunta() {
     habilitarBotones(true);
     document.getElementById('mensaje-feedback').innerText = "";
     let indice = Math.floor(Math.random() * bolsaPreguntas.length);
-    
-    // ¡Línea corregida!
     preguntaEnPantalla = bolsaPreguntas.splice(indice, 1)[0]; 
     
     if (!esModoEvaluacion) {
