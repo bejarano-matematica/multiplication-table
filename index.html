@@ -2,14 +2,13 @@
 <html lang="es">
 <head>
     <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-JS85LEWH99"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-JS85LEWH99');
-</script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-JS85LEWH99"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-JS85LEWH99');
+    </script>
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -51,7 +50,19 @@
 
             <hr style="margin: 15px 0; border: 1px dashed #ccc;">
             <button class="btn-menu modo-eval" onclick="iniciarEvaluacion()">Modo Evaluación ⏱️</button>
-            <button id="btn-activar-pro" class="btn-menu btn-pro" onclick="pedirCodigoPro()">Desbloquear PRO 🌟</button>
+            
+            <!-- NUEVA ZONA PRO (Sin ventanas emergentes) -->
+            <button id="btn-activar-pro" class="btn-menu btn-pro" onclick="mostrarAreaPro()">Desbloquear PRO 🌟</button>
+            
+            <div id="area-ingreso-pro" class="hidden" style="margin-top: 15px; padding: 15px; background: #fff3cd; border-radius: 12px; border: 2px dashed #ffc107;">
+                <p style="margin-bottom: 10px; font-weight: bold; color: #333;">Ingresá el código secreto:</p>
+                <input type="text" id="input-codigo-pro" class="input-text" style="margin-bottom: 10px; padding: 10px; font-size: 18px;" placeholder="Escribe aquí...">
+                <button class="btn-menu btn-pro" style="padding: 10px; font-size: 18px;" onclick="verificarCodigoPro()">Validar</button>
+                <p id="mensaje-error-pro" class="hidden" style="color: #d32f2f; font-weight: bold; margin-top: 10px;">❌ Código incorrecto</p>
+                <p id="mensaje-exito-pro" class="hidden" style="color: #2e7d32; font-weight: bold; margin-top: 10px;">✅ ¡Misiones desbloqueadas!</p>
+            </div>
+            <!-- FIN ZONA PRO -->
+
             <button class="btn-salir" onclick="salirDelJuego()">❌ Salir</button>
         </div>
 
